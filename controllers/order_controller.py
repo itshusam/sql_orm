@@ -18,5 +18,15 @@ def save():
 
 @cache.cached(timeout=60)
 def find_all():
-    orders = orderService.find_all()
-    return orders_schema.jsonify(orders), 200
+    
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+
+    paginated_orders = orderService.find_all(page, per_page)
+    
+    return jsonify({
+        "orders": orders_schema.dump(paginated_orders.items),
+        "total": paginated_orders.total,
+        "page": paginated_orders.page,
+        "pages": paginated_orders.pages
+    }), 200

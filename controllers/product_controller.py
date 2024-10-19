@@ -18,5 +18,14 @@ def save():
 
 @cache.cached(timeout=60)
 def find_all():
-    products = productService.find_all()
-    return products_schema.jsonify(products), 200
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+
+    paginated_products = productService.find_all(page, per_page)
+  
+    return jsonify({
+        "products": products_schema.dump(paginated_products.items),
+        "total": paginated_products.total,
+        "page": paginated_products.page,
+        "pages": paginated_products.pages
+    }), 200

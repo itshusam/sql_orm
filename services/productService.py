@@ -3,6 +3,7 @@ from database import db
 from models.product import Product
 from circuitbreaker import circuit
 from sqlalchemy import select
+from flask_sqlalchemy import pagination
 
 def fallback_function(product_data):
     return None
@@ -24,7 +25,11 @@ def save(product_data):
     except Exception as e:
         raise e
 
-def find_all():
-    query = select(Product)
-    products = db.session.execute(query).scalars().all()
-    return products
+def find_all(page=1, per_page=10):
+    try:
+        query = select(Product)
+        paginated_products = db.session.execute(query).scalars().paginate(page=page, per_page=per_page)
+
+        return paginated_products
+    except Exception as e:
+        raise e

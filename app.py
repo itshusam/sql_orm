@@ -13,6 +13,7 @@ from routes.orderBP import order_blueprint
 from routes.productBP import product_blueprint
 from routes.productionBP import production_blueprint
 from routes.customerBP import customer_blueprint
+from routes.taskTwoBP import analytics_blueprint
 from caching import cache
 def create_app(config_name):
     app = Flask(__name__)
@@ -30,7 +31,7 @@ def blue_print_config(app):
     app.register_blueprint(product_blueprint, url_prefix='/products')
     app.register_blueprint(order_blueprint, url_prefix='/orders')
     app.register_blueprint(production_blueprint, url_prefix='/productions')
-
+    app.register_blueprint(analytics_blueprint, url_prefix='/analytics')
 
 def configure_rate_limit():
     limiter.limit("5 per day")(customer_blueprint)

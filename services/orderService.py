@@ -3,6 +3,7 @@ from database import db
 from models.order import Order
 from circuitbreaker import circuit
 from sqlalchemy import select
+from flask_sqlalchemy import pagination
 
 def fallback_function(order_data):
     return None
@@ -26,7 +27,11 @@ def save(order_data):
     except Exception as e:
         raise e
 
-def find_all():
-    query = select(Order)
-    orders = db.session.execute(query).scalars().all()
-    return orders
+def find_all(page=1, per_page=10):
+    try:
+        query = select(Order)
+        paginated_orders = db.session.execute(query).scalars().paginate(page=page, per_page=per_page)
+
+        return paginated_orders
+    except Exception as e:
+        raise e
